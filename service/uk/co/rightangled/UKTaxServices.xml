@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-2.0.xsd">
+
+    <service verb="calculate" noun="SalesTaxLocal">
+        <implements service="mantle.other.TaxServices.calculate#SalesTax"/>
+        <actions>
+            <set field="orderId" from="referenceId.split(':')[0]"/>
+            <set field="orderPartSeqId" from="referenceId.split(':')[1]"/>
+
+            <set field="orderTotal" from="0.0"/>
+
+            <entity-find entity-name="mantle.order.OrderItem" list="orderItemList"><econdition field-name="orderId"/></entity-find>
+            <iterate list="orderItemList" entry="orderItem"><set field="orderTotal" from="orderTotal + (orderItem.unitAmount ?: 0) * orderItem.quantity"/></iterate>
+
+            <service-call name="create#mantle.order.OrderItem"
+                          in-map="[orderId:orderId, orderPartSeqId:orderPartSeqId, itemTypeEnumId:'ItemVatTax', quantity:1, unitAmount:(orderTotal * 0.175), itemDescription:'VAT']"/>
+
+            <set field="context.itemId" value=""/>
+            <set field="context.taxRate" value="0.175"/>
+            <set field="context.taxAmount" from="orderTotal * 0.175"/>
+            <set field="context.geoName" value=""/>
+            <set field="context.authorityName" value=""/>
+            <set field="context.taxName" value=""/>
+
+        </actions>
+    </service>
+</services>

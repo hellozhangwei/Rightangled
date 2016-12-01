@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-2.0.xsd">
+
+    <service verb="alwaysApprove" noun="PaymentAuthorization">
+        <implements service="mantle.account.PaymentServices.authorize#Payment"/>
+        <actions>
+            <log message="======RightangledTestServices.alwaysApprove#PaymentAuthorization================="/>
+
+            <entity-find-one entity-name="mantle.account.payment.Payment" value-field="payment"/>
+            <log message="======payment=${payment}================"/>
+            <set field="creditCard" from="payment.'mantle.account.method.CreditCard'"/>
+            <log message="======creditCard=${creditCard}================"/>
+
+            <set field="requestOptions" from="(new RequestOptions.RequestOptionsBuilder()).setApiKey('sk_test_tdIDSV5UHlH6G8N1ua1nAs9f').build()"/>
+
+            <!--<script location="component://Rightangled/src/main/groovy/uk/co/rightangled/TestStripe.groovy"/>-->
+<script>
+    <![CDATA[
+    import com.stripe.exception.StripeException
+    import com.stripe.model.Charge
+    import com.stripe.net.RequestOptions
+
+    Map<String, Object> chargeMap = new HashMap<String, Object>();
+    //chargeMap.put("amount", 1799);
+    chargeMap.put("amount", (payment.amount*100).intValue());
+    chargeMap.put("currency", "gbp");
+    Map<String, Object> cardMap = new HashMap<String, Object>();
+    //cardMap.put("number", "4242424242424242");
+    cardMap.put("number", creditCard.cardNumber);
+    cardMap.put("exp_month", 12);
+    cardMap.put("exp_year", 2020);
+    chargeMap.put("card", cardMap);
+    try {
+        //RequestOptions requestOptions = (new RequestOptions.RequestOptionsBuilder()).setApiKey("sk_test_tdIDSV5UHlH6G8N1ua1nAs9f ").build();
+        //Charge charge = Charge.create(chargeMap, requestOptions);
+        com.stripe.Stripe.apiKey = "sk_test_tdIDSV5UHlH6G8N1ua1nAs9f";
+        Charge charge = Charge.create(chargeMap)
+        System.out.println(charge);
+    } catch (StripeException e) {
+        e.printStackTrace();
+    }
+
+    println "====================44============================================"
+    ]]>
+</script>
+            <service-call name="create#mantle.account.method.PaymentGatewayResponse" out-map="context"
+                    in-map="[paymentGatewayConfigId:paymentGatewayConfigId, paymentOperationEnumId:'PgoAuthorize',
+                        paymentId:payment.paymentId, paymentMethodId:payment.paymentMethodId, amount:payment.amount,
+                        amountUomId:payment.amountUomId, referenceNum:'TEST', transactionDate:ec.user.nowTimestamp,
+                        resultSuccess:'Y', resultDeclined:'N', resultNsf:'N', resultBadExpire:'N', resultBadCardNumber:'N']"/>
+        </actions>
+    </service>
+
+    <service verb="alwaysApprove" noun="PaymentCapture">
+        <implements service="mantle.account.PaymentServices.capture#Payment"/>
+        <actions>
+            <log message="======RightangledTestServices.alwaysApprove#PaymentCapture================="/>
+
+            <entity-find-one entity-name="mantle.account.payment.Payment" value-field="payment"/>
+            <service-call name="create#mantle.account.method.PaymentGatewayResponse" out-map="context"
+                    in-map="[paymentGatewayConfigId:paymentGatewayConfigId, paymentOperationEnumId:'PgoCapture',
+                        paymentId:payment.paymentId, paymentMethodId:payment.paymentMethodId, amount:(amount ?: payment.amount),
+                        amountUomId:payment.amountUomId, referenceNum:'TEST', transactionDate:ec.user.nowTimestamp,
+                        resultSuccess:'Y', resultDeclined:'N', resultNsf:'N', resultBadExpire:'N', resultBadCardNumber:'N']"/>
+        </actions>
+    </service>
+
+    <service verb="alwaysApprove" noun="PaymentRelease">
+        <implements service="mantle.account.PaymentServices.release#Payment"/>
+        <actions>
+            <log message="======RightangledTestServices.alwaysApprove#PaymentRelease================="/>
+
+            <entity-find-one entity-name="mantle.account.payment.Payment" value-field="payment"/>
+            <service-call name="create#mantle.account.method.PaymentGatewayResponse" out-map="context"
+                    in-map="[paymentGatewayConfigId:paymentGatewayConfigId, paymentOperationEnumId:'PgoRelease',
+                        paymentId:payment.paymentId, paymentMethodId:payment.paymentMethodId, amount:payment.amount,
+                        amountUomId:payment.amountUomId, referenceNum:'TEST', transactionDate:ec.user.nowTimestamp,
+                        resultSuccess:'Y', resultDeclined:'N', resultNsf:'N', resultBadExpire:'N', resultBadCardNumber:'N']"/>
+        </actions>
+    </service>
+    <service verb="alwaysApprove" noun="PaymentRefund">
+        <implements service="mantle.account.PaymentServices.refund#Payment"/>
+        <actions>
+            <log message="======RightangledTestServices.alwaysApprove#PaymentRefund================="/>
+            <script>
+                <![CDATA[
+        import com.stripe.exception.StripeException
+        import com.stripe.model.Charge
+        import com.stripe.net.RequestOptions
+
+        Map<String, Object> defaultCardParams = new HashMap<String, Object>();
+        defaultCardParams.put("number", "4242424242424242");
+        defaultCardParams.put("exp_month", 12);
+        defaultCardParams.put("exp_year", 2020);
+        defaultCardParams.put("cvc", "123");
+        defaultCardParams.put("name", "J Bindings Cardholder");
+        defaultCardParams.put("address_line1", "140 2nd Street");
+        defaultCardParams.put("address_line2", "4th Floor");
+        defaultCardParams.put("address_city", "San Francisco");
+        defaultCardParams.put("address_zip", "94105");
+        defaultCardParams.put("address_state", "CA");
+        defaultCardParams.put("address_country", "USA");
+
+        Map<String, Object> defaultChargeParams = new HashMap<String, Object>();
+        defaultChargeParams.put("amount", 123);
+        defaultChargeParams.put("currency", "gbp");
+        defaultChargeParams.put("card", defaultCardParams);
+
+        //RequestOptions requestOptions = (new RequestOptions.RequestOptionsBuilder()).setApiKey("sk_test_tdIDSV5UHlH6G8N1ua1nAs9f ").build();
+        com.stripe.Stripe.apiKey = "sk_test_tdIDSV5UHlH6G8N1ua1nAs9f";
+        Charge createdCharge = Charge.create(defaultChargeParams);
+        Charge refundedCharge = createdCharge.refund();
+
+
+    println "====================10============================================"
+    ]]>
+            </script>
+            <entity-find-one entity-name="mantle.account.payment.Payment" value-field="payment"/>
+            <service-call name="create#mantle.account.method.PaymentGatewayResponse" out-map="context"
+                    in-map="[paymentGatewayConfigId:paymentGatewayConfigId, paymentOperationEnumId:'PgoRefund',
+                        paymentId:payment.paymentId, paymentMethodId:payment.paymentMethodId, amount:payment.amount,
+                        amountUomId:payment.amountUomId, referenceNum:'TEST', transactionDate:ec.user.nowTimestamp,
+                        resultSuccess:'Y', resultDeclined:'N', resultNsf:'N', resultBadExpire:'N', resultBadCardNumber:'N']"/>
+        </actions>
+    </service>
+</services>

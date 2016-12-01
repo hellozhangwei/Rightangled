@@ -1,0 +1,9 @@
+<screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/xml-screen-2.0.xsd"
+        default-menu-title="User Management" default-menu-index="40">
+    <widgets>
+        <label text="User..."/>
+        <render-mode>
+            <text type=""></text>
+        </render-mode>
+    </widgets>
+</screen>

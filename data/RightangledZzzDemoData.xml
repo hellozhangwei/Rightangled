@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-facade-xml type="demo">
+    <mantle.party.Party partyId="rightangledadmin" partyTypeEnumId="PtyPerson"/>
+    <mantle.party.Person partyId="rightangledadmin" firstName="Admin" lastName="Admin"/>
+
+    <moqui.security.UserAccount userId="rightangledadmin"  partyId="rightangledadmin" username="rightangledadmin" userFullName="Admin"
+                                currentPassword="16ac58bbfa332c1c55bd98b53e60720bfa90d394" passwordHashType="SHA"
+                                passwordHint="framework name, lowercase" currencyUomId="GBP" locale="en_UK" timeZone="Europe/London"
+                                emailAddress="hello@rightangledadmin.com"/>
+
+    <moqui.security.UserGroupMember userGroupId="UG_RIGHTANGLED_ADMIN" userId="rightangledadmin" fromDate="1265184000000"/>
+    <moqui.security.UserGroupMember userGroupId="UG_RIGHTANGLED_ADMIN" userId="EX_JOHN_DOE" fromDate="1265184000000"/>
+
+    <mantle.product.category.ProductCategory productCategoryId="RightangledHome" productCategoryTypeEnumId="PctCatalog"
+                                             categoryName="Rightangled Home Page Category"/>
+
+    <mantle.product.store.ProductStoreCategory productStoreId="RIGHTANGLED_STORE" productCategoryId="RightangledHome"
+                                               storeCategoryTypeEnumId="PsctHomePage" fromDate="1265184000000" thruDate=""/>
+
+    <mantle.product.Product productId="KIT001" productName="Rightangled KIT" productTypeEnumId="PtAsset" assetTypeEnumId="AstTpInventory" assetClassEnumId="AsClsInventoryFin"
+                            originGeoId="GBR"  chargeShipping="Y" returnable="Y"  description=""/>
+    <mantle.product.category.ProductCategoryMember productCategoryId="RightangledHome" productId="KIT001" fromDate="1265184000000" sequenceNum="1"/>
+    <mantle.product.ProductPrice productPriceId="KIT001_L" productId="KIT001" productStoreId="RIGHTANGLED_STORE"
+                                 pricePurposeEnumId="PppPurchase" priceTypeEnumId="PptCurrent"  fromDate="1265184000000"
+                                 minQuantity="1" price="19.99" priceUomId="GBP"/>
+
+
+</entity-facade-xml>

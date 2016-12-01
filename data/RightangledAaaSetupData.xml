@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-facade-xml type="seed">
+    <moqui.screen.SubscreensItem subscreenName="rightangled"      subscreenLocation="component://Rightangled/screen/RightangledRoot.xml"  screenLocation="component://webroot/screen/webroot.xml"      menuInclude="N"/>
+    <moqui.screen.SubscreensItem subscreenName="RightangledAdmin" subscreenLocation="component://Rightangled/screen/RightangledAdmin.xml" screenLocation="component://webroot/screen/webroot/apps.xml" menuInclude="Y" menuTitle="Rightangled Admin" menuIndex="9"/>
+
+    <!-- authz/permission for ALL users -->
+    <moqui.security.ArtifactGroup artifactGroupId="AG_RIGHTANGLED_ROOT" description="Rightangled Website (via root screen)"/>
+    <moqui.security.ArtifactGroupMember artifactGroupId="AG_RIGHTANGLED_ROOT" artifactName="component://Rightangled/screen/RightangledRoot.xml" artifactTypeEnumId="AT_XML_SCREEN" inheritAuthz="Y"/>
+    <moqui.security.ArtifactAuthz artifactAuthzId="AA_RIGHTANGLED_ROOT_ALL" userGroupId="ALL_USERS" artifactGroupId="AG_RIGHTANGLED_ROOT" authzTypeEnumId="AUTHZT_ALWAYS" authzActionEnumId="AUTHZA_ALL"/>
+<!--
+
+    <moqui.security.ArtifactGroup artifactGroupId="AG_RIGHTANGLED_DOCTOR" description="Rightangled doctor artifact"/>
+    <moqui.security.ArtifactGroupMember artifactGroupId="AG_RIGHTANGLED_DOCTOR" artifactName="component://Rightangled/screen/RightangledAdmin/Doctor.xml" artifactTypeEnumId="AT_XML_SCREEN" inheritAuthz="Y"/>
+    <moqui.security.UserGroup userGroupId="UG_RIGHTANGLED_DOCTOR" description="Rightangled doctor group"/>
+    <moqui.security.ArtifactAuthz artifactAuthzId="AA_RIGHTANGLED_DOCTOR" userGroupId="UG_RIGHTANGLED_DOCTOR" artifactGroupId="AG_RIGHTANGLED_DOCTOR" authzTypeEnumId="AUTHZT_ALWAYS" authzActionEnumId="AUTHZA_ALL"/>
+-->
+
+    <!-- Rightangled Admin screens -->
+    <moqui.security.ArtifactGroup artifactGroupId="AG_RIGHTANGLED_ADMIN" description="Rightangled Admin (via root screen)"/>
+    <moqui.security.ArtifactGroupMember artifactGroupId="AG_RIGHTANGLED_ADMIN" artifactName="component://Rightangled/screen/RightangledAdmin.xml" artifactTypeEnumId="AT_XML_SCREEN" inheritAuthz="Y"/>
+    <moqui.security.UserGroup userGroupId="UG_RIGHTANGLED_ADMIN" description="Rightangled Administrator"/>
+    <moqui.security.ArtifactAuthz artifactAuthzId="AA_RIGHTANGLED_ADMIN" userGroupId="UG_RIGHTANGLED_ADMIN" artifactGroupId="AG_RIGHTANGLED_ADMIN" authzTypeEnumId="AUTHZT_ALWAYS" authzActionEnumId="AUTHZA_ALL"/>
+    <!--<moqui.security.ArtifactAuthzFilter artifactAuthzId="AA_RIGHTANGLED_ADMIN" entityFilterSetId="MANTLE_ACTIVE_ORG"/>-->
+
+    <!-- Theme Type and Default Theme -->
+    <moqui.basic.Enumeration description="Rightangled Commerce Theme Type" enumId="STT_RIGHTANGLED" enumTypeId="ScreenThemeType"/>
+    <moqui.screen.ScreenTheme screenThemeId="RIGHTANGLED_DEFAULT_THEME" screenThemeTypeEnumId="STT_RIGHTANGLED"
+            description="Rightangled Default Theme"/> <!--DEFAULT is must be contained which is used in ScreenRenderImpl.groovy-->
+    <!-- NOTE: these default resources are from the Moqui default runtime webroot component -->
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="10" resourceTypeEnumId="STRT_STYLESHEET"
+            resourceValue="/lib/jquery/themes/smoothness/theme.css"/>
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="20" resourceTypeEnumId="STRT_STYLESHEET"
+            resourceValue="/css/webroot-theme.css"/>
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="100" resourceTypeEnumId="STRT_HEADER_LOGO"
+            resourceValue="/rightangled/static/images/RightangledSmall.png"/>
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="101" resourceTypeEnumId="STRT_SHORTCUT_ICON"
+            resourceValue="/rightangled/static/images/favicon.ico"/>
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="102" resourceTypeEnumId="STRT_BODY_CLASS"
+            resourceValue="bg-light"/>
+
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="110" resourceTypeEnumId="STRT_HEADER_TITLE"
+            resourceValue="Rightangled"/>
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="50" resourceTypeEnumId="STRT_STYLESHEET"
+            resourceValue="/rightangled/css/RightangledDefault.css"/>
+
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="200" resourceTypeEnumId="STRT_FOOTER_ITEM">
+        <resourceValue><![CDATA[<p><a href="http://www.moqui.org/" target="_blank">${ec.l10n.localize('Built on Moqui Framework ${ec.factory.moquiVersion}')}</a></p>]]></resourceValue>
+    </moqui.screen.ScreenThemeResource>
+
+    <mantle.party.Party partyId="ORG_RIGHTANGLED" partyTypeEnumId="PtyOrganization">
+        <mantle.party.Organization organizationName="Rightangled"/>
+        <mantle.party.PartyRole roleTypeId="OrgInternal"/>
+    </mantle.party.Party>
+
+    <mantle.ledger.LedgerServices.initPartyAccountingConfiguration sourcePartyId="DefaultSettings" organizationPartyId="ORG_RIGHTANGLED" baseCurrencyUomId="GBP"/>
+
+    <mantle.facility.Facility facilityId="ORG_RIGHTANGLED_WH" facilityTypeEnumId="FcTpWarehouse" ownerPartyId="ORG_RIGHTANGLED" facilityName="Rightangled Warehouse"/>
+
+
+    <mantle.other.tax.TaxGatewayConfig taxGatewayConfigId="TAX_GTWY_UK"
+                                       taxGatewayTypeEnumId="TaxGtwyLocal" description="UK tax gateway for sales tax calc"
+                                       calculateServiceName="uk.co.rightangled.UKTaxServices.calculate#SalesTaxLocal"/>
+
+    <mantle.product.store.ProductStore productStoreId="RIGHTANGLED_STORE" storeName="Rightangled Store" organizationPartyId="ORG_RIGHTANGLED"
+                                       inventoryFacilityId="ORG_RIGHTANGLED_WH" reservationOrderEnumId="AsResOrdFifoRec" requirementMethodEnumId="" defaultLocale="en_UK" defaultCurrencyUomId="GBP" taxGatewayConfigId="TAX_GTWY_UK"/>
+
+
+    <mantle.account.method.PaymentGatewayConfig paymentGatewayConfigId="STRIPE" paymentGatewayTypeEnumId="PgtTest"
+                                                description="Stripe Test Gateway, Always Approves"
+                                                authorizeServiceName="uk.co.rightangled.StripeTestServices.alwaysApprove#PaymentAuthorization"
+                                                captureServiceName="uk.co.rightangled.StripeTestServices.alwaysApprove#PaymentCapture"
+                                                releaseServiceName="uk.co.rightangled.StripeTestServices.alwaysApprove#PaymentRelease"
+                                                refundServiceName="uk.co.rightangled.StripeTestServices.alwaysApprove#PaymentRefund"/>
+
+    <mantle.product.store.ProductStorePaymentGateway productStoreId="RIGHTANGLED_STORE"
+                                                     paymentInstrumentEnumId="PiCreditCard" paymentGatewayConfigId="STRIPE"/>
+
+
+    <mantle.shipment.carrier.ShippingGatewayConfig shippingGatewayConfigId="SGC_ROYAL_MAIL"
+                                                   shippingGatewayTypeEnumId="ShGtwyLocal" description="Royal Mail gateway for order shipping rate"
+                                                   getOrderRateServiceName="uk.co.rightangled.RoyalMailServices.get#OrderShippingRateLocal"/>
+
+    <mantle.party.Party partyId="ORG_ROYAL_MAIL" partyTypeEnumId="PtyOrganization"/>
+
+    <mantle.shipment.carrier.CarrierShipmentMethod carrierPartyId="ORG_ROYAL_MAIL" shipmentMethodEnumId="ShMthPickUp" sequenceNum="0"/>
+
+
+    <mantle.product.store.ProductStoreShippingGateway productStoreId="RIGHTANGLED_STORE" carrierPartyId="ORG_ROYAL_MAIL"
+                                                      shippingGatewayConfigId="SGC_ROYAL_MAIL"/>
+
+
+</entity-facade-xml>
