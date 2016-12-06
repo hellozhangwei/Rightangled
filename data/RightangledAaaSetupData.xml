@@ -11,10 +11,18 @@
 <!--
 
     <moqui.security.ArtifactGroup artifactGroupId="AG_RIGHTANGLED_DOCTOR" description="Rightangled doctor artifact"/>
-    <moqui.security.ArtifactGroupMember artifactGroupId="AG_RIGHTANGLED_DOCTOR" artifactName="component://Rightangled/screen/RightangledAdmin/Doctor.xml" artifactTypeEnumId="AT_XML_SCREEN" inheritAuthz="Y"/>
+    <moqui.security.ArtifactGroupMember artifactGroupId="AG_RIGHTANGLED_DOCTOR" artifactName="component://Rightangled/screen/RightangledRoot/Doctor.xml" artifactTypeEnumId="AT_XML_SCREEN" inheritAuthz="Y"/>
     <moqui.security.UserGroup userGroupId="UG_RIGHTANGLED_DOCTOR" description="Rightangled doctor group"/>
     <moqui.security.ArtifactAuthz artifactAuthzId="AA_RIGHTANGLED_DOCTOR" userGroupId="UG_RIGHTANGLED_DOCTOR" artifactGroupId="AG_RIGHTANGLED_DOCTOR" authzTypeEnumId="AUTHZT_ALWAYS" authzActionEnumId="AUTHZA_ALL"/>
 -->
+
+    <!--
+    <moqui.security.ArtifactAuthz artifactAuthzId="AA_RIGHTANGLED_DOCTOR_1" userGroupId="ALL_USERS" artifactGroupId="AG_RIGHTANGLED_ROOT" authzTypeEnumId="AUTHZT_DENY" authzActionEnumId="AUTHZA_ALL"/>
+
+    <moqui.security.UserGroup userGroupId="UG_RIGHTANGLED_DOCTOR" description="Rightangled doctor group"/>
+    <moqui.security.UserPermission userPermissionId="RIGHTANGLED_DOCTOR" description="rightangled doctor page permission"/>
+    <moqui.security.UserGroupPermission userGroupId="UG_RIGHTANGLED_DOCTOR" userPermissionId="RIGHTANGLED_DOCTOR" fromDate="0"/>
+    -->
 
     <!-- Rightangled Admin screens -->
     <moqui.security.ArtifactGroup artifactGroupId="AG_RIGHTANGLED_ADMIN" description="Rightangled Admin (via root screen)"/>
@@ -28,10 +36,8 @@
     <moqui.screen.ScreenTheme screenThemeId="RIGHTANGLED_DEFAULT_THEME" screenThemeTypeEnumId="STT_RIGHTANGLED"
             description="Rightangled Default Theme"/> <!--DEFAULT is must be contained which is used in ScreenRenderImpl.groovy-->
     <!-- NOTE: these default resources are from the Moqui default runtime webroot component -->
-    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="10" resourceTypeEnumId="STRT_STYLESHEET"
-            resourceValue="/lib/jquery/themes/smoothness/theme.css"/>
-    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="20" resourceTypeEnumId="STRT_STYLESHEET"
-            resourceValue="/css/webroot-theme.css"/>
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="10" resourceTypeEnumId="STRT_STYLESHEET" resourceValue=""/>
+    <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="20" resourceTypeEnumId="STRT_STYLESHEET" resourceValue="/css/webroot-theme.css"/>
     <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="100" resourceTypeEnumId="STRT_HEADER_LOGO"
             resourceValue="/rightangled/static/images/RightangledSmall.png"/>
     <moqui.screen.ScreenThemeResource screenThemeId="RIGHTANGLED_DEFAULT_THEME" sequenceNum="101" resourceTypeEnumId="STRT_SHORTCUT_ICON"
@@ -88,6 +94,28 @@
 
     <mantle.product.store.ProductStoreShippingGateway productStoreId="RIGHTANGLED_STORE" carrierPartyId="ORG_ROYAL_MAIL"
                                                       shippingGatewayConfigId="SGC_ROYAL_MAIL"/>
+
+    <moqui.screen.form.DbForm formId="RightangledSurvey">
+        <moqui.screen.form.DbFormField fieldName="favoriteColor" fieldTypeEnumId="DBFFT_text-line" title="Favorite Color" layoutSequenceNum="1"/>
+        <moqui.screen.form.DbFormField fieldName="currentAge" fieldTypeEnumId="DBFFT_text-line" title="Age" layoutSequenceNum="2">
+            <moqui.screen.form.DbFormFieldAttribute attributeName="size" value="8"/></moqui.screen.form.DbFormField>
+        <moqui.screen.form.DbFormField fieldName="exampleTypeEnumId" fieldTypeEnumId="DBFFT_drop-down" title="Favorite Example Type" layoutSequenceNum="3">
+            <moqui.screen.form.DbFormFieldEntOpts sequenceNum="1" entityName="moqui.basic.Enumeration" text="${description}">
+                <moqui.screen.form.DbFormFieldEntOptsCond entityFieldName="enumTypeId" value="ExampleType"/>
+                <moqui.screen.form.DbFormFieldEntOptsOrder orderSequenceNum="1" entityFieldName="description"/>
+            </moqui.screen.form.DbFormFieldEntOpts>
+        </moqui.screen.form.DbFormField>
+        <moqui.screen.form.DbFormField fieldName="happy" fieldTypeEnumId="DBFFT_radio" title="Happy?" layoutSequenceNum="5">
+            <moqui.screen.form.DbFormFieldOption sequenceNum="1" keyValue="Y" text="Yes"/>
+            <moqui.screen.form.DbFormFieldOption sequenceNum="2" keyValue="N" text="No"/>
+            <moqui.screen.form.DbFormFieldOption sequenceNum="3" keyValue="D" text="Don't Know"/>
+            <moqui.screen.form.DbFormFieldOption sequenceNum="4" keyValue="W" text="What is the meaning of happiness?"/>
+        </moqui.screen.form.DbFormField>
+        <moqui.screen.form.DbFormField fieldName="testDate" fieldTypeEnumId="DBFFT_date-time" title="Date Test" layoutSequenceNum="6">
+            <moqui.screen.form.DbFormFieldAttribute attributeName="type" value="date"/></moqui.screen.form.DbFormField>
+        <moqui.screen.form.DbFormField fieldName="testTimestamp" fieldTypeEnumId="DBFFT_date-time" title="Timestamp Test" layoutSequenceNum="7"/>
+        <moqui.screen.form.DbFormField fieldName="submitButton" fieldTypeEnumId="DBFFT_submit" title="Save" layoutSequenceNum="9"/>
+    </moqui.screen.form.DbForm>
 
 
 </entity-facade-xml>
